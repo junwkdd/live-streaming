@@ -11,5 +11,8 @@ module.exports = {
     ecmaVersion: 12,
   },
   rules: {
+    'no-plusplus': 'off',
+    'no-shadow': 'off',
+    'linebreak-style': 0,
   },
 };
