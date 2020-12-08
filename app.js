@@ -5,7 +5,7 @@ const app = new Koa();
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
-const bodyparser = require('koa-bodyparser');
+const bodyparser = require('koa-body');
 const logger = require('koa-logger');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -14,13 +14,18 @@ const { jwtMiddleware } = require('./lib/token');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const channel = require('./routes/channel');
 
 // error handler
 onerror(app);
 
 // middlewares
 app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text'],
+  multipart: true,
+  formidable: {
+    uploadDir: './public/videos',
+    keepExtensions: true,
+  },
 }));
 app.use(json());
 app.use(logger());
@@ -44,10 +49,11 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+app.use(channel.routes(), channel.allowedMethods());
 
 // error-handling
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
+app.on('error', (err) => {
+  console.error('server error', err);
 });
 
 // database

@@ -52,7 +52,7 @@ router.post('/register', async (ctx) => {
 
 router.get('/logout', async (ctx) => {
   ctx.cookies.set('accessToken', null, { httpOnly: true, maxAge: 0 });
-  ctx.status = 204;
+  ctx.redirect('/');
 });
 
 router.get('/exists', async (ctx) => {
