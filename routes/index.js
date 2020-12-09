@@ -8,4 +8,8 @@ router.get('/', async (ctx) => {
   }
 });
 
+router.get('/channel', async (ctx) => {
+  await ctx.render('channel');
+});
+
 module.exports = router;

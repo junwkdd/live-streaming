@@ -9,9 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "crypto": "^1.0.1",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-body": "^4.2.0",
@@ -22,6 +25,7 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
+    "moment": "^2.29.1",
     "mongoose": "^5.11.4",
     "pug": "^2.0.3"
   },

@@ -103,3 +103,6 @@ dist
 # TernJS port file
 .tern-port
 *.mov
+*.m3u8
+*.mp4
+*.ts

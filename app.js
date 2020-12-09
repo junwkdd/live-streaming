@@ -14,7 +14,7 @@ const { jwtMiddleware } = require('./lib/token');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
-const channel = require('./routes/channel');
+const channel = require('./routes/video');
 
 // error handler
 onerror(app);
@@ -23,7 +23,7 @@ onerror(app);
 app.use(bodyparser({
   multipart: true,
   formidable: {
-    uploadDir: './public/videos',
+    uploadDir: './public/temp/',
     keepExtensions: true,
   },
 }));
@@ -31,9 +31,7 @@ app.use(json());
 app.use(logger());
 app.use(require('koa-static')(`${__dirname}/public`));
 
-app.use(views(`${__dirname}/views`, {
-  extension: 'html',
-}));
+app.use(views(`${__dirname}/views`, { extension: 'html' }));
 
 // jwt
 app.use(jwtMiddleware);

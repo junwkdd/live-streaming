@@ -23,10 +23,10 @@
                     <div id="idCheck" class="mt-2 ml-2"></div>
 
                     <label for="pw" class="mt-3">비밀번호:</label>
-                    <input type="password" class="form-control mb-2" name="pw" id="pw" oninput="pwSame();">
+                    <input type="password" class="form-control mb-2" name="pw" id="pw">
 
                     <label for="pwre" class="mt-3">비밀번호 확인:</label>
-                    <input type="password" class="form-control" name="repw" id="repw" oninput="pwSame();">
+                    <input type="password" class="form-control" name="repw" id="repw">
                     <div id="pwCheck" class="mt-2 ml-2"></div>
 
                     <input type="submit" id="submit" class="d-block btn btn-outline-primary mt-4 mx-auto" style="color: #56baed; border-color: #56baed" value="회원가입">
@@ -39,25 +39,21 @@
         </div>
     </div>
 
-    <script>
-        function pwSame() {
-            if(pw.value === repw.value) {
-                pwCheck.style.color="#56baed";
-                pwCheck.innerHTML  = "* 비밀번호 일치"
-                submit.disabled = false;
-                submit.style.background="#FFFFFF";
-                submit.style.color="#56baed";
-            } else {
-                pwCheck.style.color="#FF0000";
-                pwCheck.innerHTML  = "* 비밀번호 불일치"
-                submit.disabled = true;
-                submit.style.background="#BDBDBD";
-                submit.style.color="#000000";
-            }
-        } 
-    </script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+        $("#pw, #repw").on("propertychange change keyup paste input", () => {
+            if($("#pw").val() === $("#repw").val()) {
+                $("#pwCheck").css("color", "#56baed");
+                $("#pwCheck").html("* 비밀번호 일치");
+                $("#submit").attr("disabled", true);
+            } else {
+                $("#pwCheck").css("color", "#FF0000");
+                $("#pwCheck").html("* 비밀번호 불일치");
+                $("#submit").attr("disabled", false);
+            }
+        });
+    </script>
   </body>
 </html>

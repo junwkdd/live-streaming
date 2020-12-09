@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>channel</title>
+    <title>upload</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
   </head>
   <body style="overflow-x:hidden" class="bg-light h-100">
     <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
@@ -47,32 +48,72 @@
 
         <div class="col-md-10">
             <div class="col-md-5 pl-0 mt-5">
-                <form action="./channel/upload" method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" id="fileForm">
                     <div class="form-group">
                         <label for="title">영상 제목:</label>
-                        <input type="text" class="form-control" name="title" id="title">
+                        <input type="text" class="form-control" name="title" id="title" required>
                         <label for="description" class="mt-3">영상 설명:</label>
-                        <input type="text" class="form-control" name="description" id="description">
+                        <input type="text" class="form-control" name="description" id="description" required>
                     </div>
                     <div class="custom-file mt-4">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                        <input type="file" class="custom-file-input" id="customFile" name="video" id="video">
+                        <label class="custom-file-label overflow-hidden" for="customFile">Choose file</label>
+                        <input type="file" class="custom-file-input" id="customFile" name="video" id="video" required>
                     </div>
-                    <div class="form-group mt-3">
-                        <input type="submit" class="btn btn-outline-primary mt-4" style="color: #56baed; border-color: #56baed" value="업로드">
+                    <div class="form-group mt-5">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <button id="submit" class="btn btn-primary">
+                                    <span class="my-auto" id="state">Upload</span>
+                                </button>
+                            </div>
+                            <!-- progress bar -->
+                            <!-- <div class="progress col-md-9 my-auto p-0">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 50%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="col-md-1 my-auto">
+                                50%
+                            </div> -->
+                            <!-- progress bar -->
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script>
         $(".custom-file-input").on("change", function() {
             const fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        
+        $("#submit").on("click", () => {            
+            $.ajax({
+                url: 'http://localhost:3000/video/upload',
+                type: 'post',
+                enctype: 'multipart/form-data',
+                data: new FormData($("#fileForm")[0]),
+                success: (result) => {
+                    $(".spinner-border").remove();
+                    $("#submit").prepend('<i class="fa fa-check mr-1"></i>');
+                    $("#state").html("Success");
+                },
+                error: (err) => {
+                    $(".spinner-border").remove();
+                    $("#submit").prepend('<i class="fas fa-times"></i>');
+                    $("#state").html("Failed");
+                },
+                processData: false,
+                contentType: false,
+            });
+
+            $("#submit").attr("disabled", true);
+            $("#submit").prepend('<span class="spinner-border spinner-border-sm mr-1" role="status" style="margin-bottom: 1%;" aria-hidden="true"></span>');
+            $("#state").html("Uploading...");
         });
     </script>
   </body>
