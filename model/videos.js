@@ -9,6 +9,7 @@ const videoSchema = new Schema({
   description: { type: String },
   nickname: { type: String },
   date: { type: String, default: moment().format('YYYY.MM.DD') },
+  view: { type: Number, default: 0 },
   path: { type: String },
 });
 

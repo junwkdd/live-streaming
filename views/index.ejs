@@ -49,7 +49,7 @@
                 </button>
                 <div class="dropdown-menu" style="min-width: 0;">
                     <a class="dropdown-item px-2" href="/channel">내 채널</a>
-                    <a class="dropdown-item px-2" href="/video/upload">업로드</a>
+                    <a class="dropdown-item px-2" href="/videos/upload">업로드</a>
                     <a class="dropdown-item px-2" href="/users/logout">로그아웃</a>
                 </div>
             </div>
@@ -136,39 +136,25 @@
                     </a>
 
                     <div class="carousel-inner col-md-10 mx-auto" role="listbox">
-            
-                        <div class="carousel-item active">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
-                                    <div class="mt-2">
-                                        <h6>영상 제목</h6>
-                                        <h6 class="text-black-50 small">유저 닉네임</h6>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
+                        <% for (let i = 0; i < Math.ceil(videos.length/4); i++) { %>
+                            <% if (i <= 3) { %> 
+                                <div class="carousel-item active">
+                            <% } else { %>
+                                <div class="carousel-item">
+                            <% } %>
+                                <div class="row">
+                                    <% for (let j=0; j < (videos.length % 5); j++) { %>
+                                        <div class="col-md-3">
+                                            <a href="/videos/view?videoID=<%= videos[j]._id %>" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
+                                            <div class="mt-2">
+                                                <h6><%= videos[j].title %></h6>
+                                                <h6 class="text-black-50 small"><%= videos[j].nickname %></h6>
+                                            </div>
+                                        </div>
+                                    <% } %>
                                 </div>
                             </div>
-                        </div>
-                
-                        <div class="carousel-item">
-                            <div class="col-md-3">
-                                <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
-                            </div>
-                        </div>
-                
-                        <div class="carousel-item">
-                            <div class="col-md-3">
-                                <a href="#" class=""><img src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg" alt="..." class="img-thumbnail border-0 p-0"></a>
-                            </div>
-                        </div>
+                        <% } %>
                     </div>
             
                     <a class="carousel-control-next col-md-1" href="#VOD" role="button" data-slide="next">

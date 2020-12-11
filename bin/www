@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('demo:server');
 const http = require('http');
+const HLSServer = require('hls-server')
 
 /**
  * Get port from environment and store in Express.
@@ -20,11 +21,6 @@ const port = normalizePort(process.env.PORT || '3000');
  */
 
 const server = http.createServer(app.callback());
-
-/**
- * hls server
- */
-
 
 /**
  * Listen on provided port, on all network interfaces.

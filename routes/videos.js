@@ -1,7 +1,7 @@
 const router = require('koa-router')();
 const fs = require('fs').promises;
 
-router.prefix('/video');
+router.prefix('/videos');
 
 const VideoModel = require('../model/videos');
 const UserModel = require('../model/users');
@@ -31,13 +31,18 @@ router.post('/upload', async (ctx) => {
   video.title = ctx.request.body.title;
   video.description = ctx.request.body.description;
   video.nickname = user.nickname;
-  video.path = `${fileDir}/${fileName}.${fileExtension}`;
+  video.path = `videos/${fileName}/${fileName}.m3u8`;
 
   await video.save();
 
-  await encodeVideo(video.path, fileDir, fileName);
+  await encodeVideo({ fileDir, fileName, fileExtension });
 
   ctx.body = 'success';
+});
+
+router.get('/view', async (ctx) => {
+  const video = await VideoModel.findOne({ _id: ctx.request.query.videoID });
+  await ctx.render('videoView', { video });
 });
 
 module.exports = router;

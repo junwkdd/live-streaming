@@ -7,14 +7,16 @@ const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-body');
 const logger = require('koa-logger');
+const cors = require('@koa/cors');
 const mongoose = require('mongoose');
+
 require('dotenv').config();
 
 const { jwtMiddleware } = require('./lib/token');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
-const channel = require('./routes/video');
+const channel = require('./routes/videos');
 
 // error handler
 onerror(app);
@@ -31,7 +33,10 @@ app.use(json());
 app.use(logger());
 app.use(require('koa-static')(`${__dirname}/public`));
 
-app.use(views(`${__dirname}/views`, { extension: 'html' }));
+app.use(views(`${__dirname}/views`, { extension: 'ejs' }));
+
+// cors
+app.use(cors());
 
 // jwt
 app.use(jwtMiddleware);
