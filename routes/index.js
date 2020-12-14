@@ -2,13 +2,12 @@ const router = require('koa-router')();
 
 const VideoModel = require('../model/videos');
 
+const { division } = require('../lib/division');
+
 router.get('/', async (ctx) => {
-  const videos = await VideoModel.find({}).sort('view').limit(12);
-  if (ctx.request.user !== undefined) {
-    await ctx.render('index', { videos });
-  } else {
-    ctx.redirect('./users/login');
-  }
+  const videos = division(await VideoModel.find().sort({ view: -1 }).limit(12), 4);
+
+  await ctx.render('index', { videos });
 });
 
 router.get('/channel', async (ctx) => {

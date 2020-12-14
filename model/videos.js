@@ -10,6 +10,8 @@ const videoSchema = new Schema({
   nickname: { type: String },
   date: { type: String, default: moment().format('YYYY.MM.DD') },
   view: { type: Number, default: 0 },
+  like: { type: Number, default: 0 },
+  hate: { type: Number, default: 0 },
   path: { type: String },
 });
 
