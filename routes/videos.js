@@ -1,5 +1,6 @@
 const router = require('koa-router')();
 const fs = require('fs').promises;
+const moment = require('moment');
 
 router.prefix('/videos');
 
@@ -7,8 +8,6 @@ const VideoModel = require('../model/videos');
 const UserModel = require('../model/users');
 
 const ffmpeg = require('../lib/ffmpeg');
-
-const video = new VideoModel();
 
 router.get('/upload', async (ctx) => {
   await ctx.render('upload');
@@ -25,16 +24,19 @@ router.post('/upload', async (ctx) => {
   await fs.mkdir(`.${fileDir}`);
   await fs.rename(`./public/temp/${fileName}.${fileExtension}`, `.${fileDir}/${fileName}.${fileExtension}`);
 
-  const user = await UserModel.findOne({ id: ctx.request.user.userID });
-
   await ffmpeg.extractThumbnail({ fileDir, fileName, fileExtension }, '00:00:05.000'); // hh:mm:ss.xxx
   await ffmpeg.encodeVideo({ fileDir, fileName, fileExtension });
 
-  video.userID = ctx.request.user.userID;
-  video.title = ctx.request.body.title;
-  video.description = ctx.request.body.description;
-  video.nickname = user.nickname;
-  video.path = `videos/${fileName}/${fileName}`;
+  const user = await UserModel.findOne({ id: ctx.request.user.userID });
+
+  const video = new VideoModel({
+    userID: ctx.request.user.userID,
+    nickname: user.nickname,
+    title: ctx.request.body.title,
+    description: ctx.request.body.description,
+    date: moment().format('YYYY.MM.DD'),
+    path: `videos/${fileName}/${fileName}`,
+  });
 
   await video.save();
 
@@ -47,18 +49,17 @@ router.get('/view', async (ctx) => {
   const { videoID } = ctx.request.query;
 
   const video = await VideoModel.findOne({ _id: videoID });
+  // const user = await UserModel.findOne({ id: video.userID });
 
   const views = ctx.cookies.get('views');
-
   if (views === undefined) {
     ctx.cookies.set('views', { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 1 });
   }
-
   if (!views.includes(videoID) || views === undefined) {
     ctx.cookies.set('views', views.concat('', videoID), { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 1 });
 
     video.view += 1;
-    await VideoModel.updateOne({ _id: ctx.request.query.videoID }, { view: video.view });
+    await video.save();
   }
 
   await ctx.render('videoPlay', { video });
@@ -67,10 +68,10 @@ router.get('/view', async (ctx) => {
 router.post('/like', async (ctx) => {
   const { videoID } = ctx.request.query;
 
-  const video = await VideoModel.findOne({ _id: videoID });
+  const video = await VideoModel.findById(videoID);
 
   video.like += 1;
-  await VideoModel.updateOne({ _id: videoID }, { like: video.like });
+  await video.save();
 
   ctx.body = video.like;
 });
@@ -78,10 +79,10 @@ router.post('/like', async (ctx) => {
 router.delete('/like', async (ctx) => {
   const { videoID } = ctx.request.query;
 
-  const video = await VideoModel.findOne({ _id: videoID });
+  const video = await VideoModel.findById(videoID);
 
   video.like -= 1;
-  await VideoModel.updateOne({ _id: videoID }, { like: video.like });
+  await video.save();
 
   ctx.body = video.like;
 });
@@ -89,10 +90,10 @@ router.delete('/like', async (ctx) => {
 router.post('/hate', async (ctx) => {
   const { videoID } = ctx.request.query;
 
-  const video = await VideoModel.findOne({ _id: videoID });
+  const video = await VideoModel.findById(videoID);
 
   video.hate += 1;
-  await VideoModel.updateOne({ _id: videoID }, { hate: video.hate });
+  await video.save();
 
   ctx.body = video.hate;
 });
@@ -100,12 +101,28 @@ router.post('/hate', async (ctx) => {
 router.delete('/hate', async (ctx) => {
   const { videoID } = ctx.request.query;
 
-  const video = await VideoModel.findOne({ _id: videoID });
+  const video = await VideoModel.findById(videoID);
 
   video.hate -= 1;
-  await VideoModel.updateOne({ _id: videoID }, { hate: video.hate });
+  await video.save();
 
   ctx.body = video.hate;
+});
+
+router.post('/comment', async (ctx) => {
+  const { videoID } = ctx.request.query;
+
+  const user = await UserModel.findOne({ id: ctx.request.user.userID });
+
+  const comment = {
+    nickname: user.nickname,
+    date: moment().format('YYYY.MM.DD'),
+    comment: ctx.request.body.comment,
+  };
+
+  await VideoModel.updateOne({ _id: videoID }, { $push: { comments: comment } });
+
+  ctx.body = comment;
 });
 
 module.exports = router;

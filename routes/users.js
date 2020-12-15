@@ -7,8 +7,6 @@ const UserModel = require('../model/users');
 const Token = require('../lib/token');
 const { hash } = require('../lib/hash');
 
-const user = new UserModel();
-
 router.get('/exists', async (ctx) => {
   const user = await UserModel.findOne({ id: ctx.request.query.id });
 
@@ -40,11 +38,11 @@ router.get('/register', async (ctx) => {
 });
 
 router.post('/register', async (ctx) => {
-  user.id = ctx.request.body.id;
-  user.nickname = ctx.request.body.nickname;
-  user.pw = ctx.request.body.pw;
-
-  user.pw = hash(user.pw);
+  const user = new UserModel({
+    id: ctx.request.body.id,
+    nickname: ctx.request.body.nickname,
+    pw: hash(ctx.request.body.pw),
+  });
 
   await user.save();
   ctx.redirect('/users/login');
