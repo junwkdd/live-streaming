@@ -4,7 +4,7 @@ router.prefix('/users');
 
 const UserModel = require('../model/users');
 
-const Token = require('../lib/token');
+const { generateToken } = require('../lib/token');
 const { hash } = require('../lib/hash');
 
 router.get('/exists', async (ctx) => {
@@ -26,7 +26,7 @@ router.post('/login', async (ctx) => {
   } else if (user.pw !== hash(ctx.request.body.pw)) {
     ctx.body = 'wrong pw';
   } else {
-    const token = await Token.generateToken({ userID: ctx.request.body.id });
+    const token = await generateToken({ userID: ctx.request.body.id });
     ctx.cookies.set('accessToken', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 1 });
     ctx.body = user;
     ctx.redirect('/');
@@ -58,6 +58,24 @@ router.get('/exists', async (ctx) => {
 
   if (user === null) ctx.body = 'no user';
   else ctx.body = 'exists';
+});
+
+router.post('/subscribe', async (ctx) => {
+  const user = await UserModel.findOne({ id: ctx.request.query.userID });
+
+  user.subscribe += 1;
+  await user.save();
+
+  ctx.body = user.subscribe;
+});
+
+router.delete('/unSubscribe', async (ctx) => {
+  const user = await UserModel.findOne({ id: ctx.request.query.userID });
+
+  user.subscribe -= 1;
+  await user.save();
+
+  ctx.body = user.subscribe;
 });
 
 module.exports = router;

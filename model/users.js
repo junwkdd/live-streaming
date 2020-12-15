@@ -6,6 +6,8 @@ const userSchema = new Schema({
   id: { type: String },
   nickname: { type: String },
   pw: { type: String },
+  subscribe: { type: Number, default: 0 },
+  profile: { type: String, default: '/images/profile.png' },
 });
 
 module.exports = mongoose.model('user', userSchema);

@@ -49,7 +49,7 @@ router.get('/view', async (ctx) => {
   const { videoID } = ctx.request.query;
 
   const video = await VideoModel.findOne({ _id: videoID });
-  // const user = await UserModel.findOne({ id: video.userID });
+  const user = await UserModel.findOne({ id: video.userID });
 
   const views = ctx.cookies.get('views');
   if (views === undefined) {
@@ -62,7 +62,7 @@ router.get('/view', async (ctx) => {
     await video.save();
   }
 
-  await ctx.render('videoPlay', { video });
+  await ctx.render('videoPlay', { video, user });
 });
 
 router.post('/like', async (ctx) => {
@@ -118,6 +118,7 @@ router.post('/comment', async (ctx) => {
     nickname: user.nickname,
     date: moment().format('YYYY.MM.DD'),
     comment: ctx.request.body.comment,
+    profile: user.profile,
   };
 
   await VideoModel.updateOne({ _id: videoID }, { $push: { comments: comment } });
