@@ -61,18 +61,13 @@ router.get('/exists', async (ctx) => {
 });
 
 router.post('/subscribe', async (ctx) => {
-  const user = await UserModel.findOne({ id: ctx.request.query.userID });
+  const user = await UserModel.findOne({ id: ctx.request.body.userID });
 
-  user.subscribe += 1;
-  await user.save();
-
-  ctx.body = user.subscribe;
-});
-
-router.delete('/unSubscribe', async (ctx) => {
-  const user = await UserModel.findOne({ id: ctx.request.query.userID });
-
-  user.subscribe -= 1;
+  if (ctx.request.body.status === 'subscribe') {
+    user.subscribe += 1;
+  } else if (ctx.request.body.status === 'unsubscribe') {
+    user.subscribe -= 1;
+  }
   await user.save();
 
   ctx.body = user.subscribe;

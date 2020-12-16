@@ -9,6 +9,7 @@ const bodyparser = require('koa-body');
 const logger = require('koa-logger');
 const cors = require('@koa/cors');
 const mongoose = require('mongoose');
+const NodeMediaServer = require('./mediaServer');
 
 require('dotenv').config();
 
@@ -16,7 +17,8 @@ const { jwtMiddleware } = require('./lib/token');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
-const channel = require('./routes/videos');
+const videos = require('./routes/videos');
+const live = require('./routes/live');
 
 // error handler
 onerror(app);
@@ -52,12 +54,16 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
-app.use(channel.routes(), channel.allowedMethods());
+app.use(videos.routes(), videos.allowedMethods());
+app.use(live.routes(), live.allowedMethods());
 
 // error-handling
 app.on('error', (err) => {
   console.error('server error', err);
 });
+
+// node-media-server
+NodeMediaServer.run(console.log('NodeMediaServer running'));
 
 // database
 mongoose.Promise = Promise;

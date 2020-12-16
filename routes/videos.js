@@ -66,44 +66,27 @@ router.get('/view', async (ctx) => {
 });
 
 router.post('/like', async (ctx) => {
-  const { videoID } = ctx.request.query;
+  const video = await VideoModel.findById(ctx.request.body.videoID);
 
-  const video = await VideoModel.findById(videoID);
-
-  video.like += 1;
-  await video.save();
-
-  ctx.body = video.like;
-});
-
-router.delete('/like', async (ctx) => {
-  const { videoID } = ctx.request.query;
-
-  const video = await VideoModel.findById(videoID);
-
-  video.like -= 1;
+  if (ctx.request.body.status === 'like') {
+    video.like += 1;
+  } else if (ctx.request.body.status === 'unlike') {
+    video.like -= 1;
+  }
   await video.save();
 
   ctx.body = video.like;
 });
 
 router.post('/hate', async (ctx) => {
-  const { videoID } = ctx.request.query;
+  const video = await VideoModel.findById(ctx.request.body.videoID);
 
-  const video = await VideoModel.findById(videoID);
+  if (ctx.request.body.status === 'hate') {
+    video.hate += 1;
+  } else if (ctx.request.body.status === 'unhate') {
+    video.hate -= 1;
+  }
 
-  video.hate += 1;
-  await video.save();
-
-  ctx.body = video.hate;
-});
-
-router.delete('/hate', async (ctx) => {
-  const { videoID } = ctx.request.query;
-
-  const video = await VideoModel.findById(videoID);
-
-  video.hate -= 1;
   await video.save();
 
   ctx.body = video.hate;

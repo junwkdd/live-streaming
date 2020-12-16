@@ -151,69 +151,72 @@
     <!-- videoPlayer resize -->
     <script src="../javascript/videoPlayerResize.js"></script>
 
-    <!-- like unlike -->
+    <!-- like hate -->
     <script>
-        const likeUp = () => {
+        const like = () => {
             $('.fa-thumbs-up').css('color', '#0275d8');
             $.ajax({
-                url: 'http://localhost:3000/videos/like?videoID=<%= video._id %>',
+                url: 'http://localhost:3000/videos/like',
                 type: 'POST',
-                data: { videoID: '<%= video._id %>' },
+                data: { status: 'like', videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
-                $('.likeCnt').html(likeCnt);
+                    $('.likeCnt').html(likeCnt);
                 },
             });
         };
-        const likeDown = () => {
+        const unlike = () => {
             $('.fa-thumbs-up').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/videos/like?videoID=<%= video._id %>',
-                type: 'DELETE',
+                url: 'http://localhost:3000/videos/like',
+                type: 'POST',
+                data: { status: 'unlike', videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
-                $('.likeCnt').html(likeCnt);
+                    $('.likeCnt').html(likeCnt);
                 },
             });
         };
-        const hateUp = () => {
+        const hate = () => {
             $('.fa-thumbs-down').css('color', '#0275d8');
             $.ajax({
-                url: 'http://localhost:3000/videos/hate?videoID=<%= video._id %>',
+                url: 'http://localhost:3000/videos/hate',
                 type: 'POST',
+                data: { status: 'hate', videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
-                $('.hateCnt').html(hateCnt);
+                    $('.hateCnt').html(hateCnt);
                 },
             });
         };
-        const hateDown = () => {
+        const unhate = () => {
             $('.fa-thumbs-down').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/videos/hate?videoID=<%= video._id %>',
-                type: 'DELETE',
+                url: 'http://localhost:3000/videos/hate',
+                type: 'POST',
+                data: { status: 'unhate', videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
-                $('.hateCnt').html(hateCnt);
+                    $('.hateCnt').html(hateCnt);
                 },
             });
         };
 
         $('.like').on('click', () => {
             if ($('.fa-thumbs-up').css('color') === 'rgb(108, 117, 125)') {
-                likeUp();
+                like();
                 if ($('.fa-thumbs-down').css('color') === 'rgb(2, 117, 216)') {
-                    hateDown();
+                    unhate();
                 }
             } else {
-                likeDown();
+                unlike();
             }
         });
 
         $('.hate').on('click', () => {
             if ($('.fa-thumbs-down').css('color') === 'rgb(108, 117, 125)') {
-                hateUp();
+                hate();
                 if ($('.fa-thumbs-up').css('color') === 'rgb(2, 117, 216)') {
-                    likeDown();
+                    unlike();
                 }
             } else {
-                hateDown();
+                unhate();
             }
         });
     </script>
@@ -242,7 +245,6 @@
             });
         });
     </script>
-    <!-- /add comment -->
 
     <!-- subscribe -->
     <script>
@@ -251,22 +253,24 @@
             $('#subscribeBtn').css('color', '#6c757d')
             $('#subscribeBtn').html('구독중');
             $.ajax({
-                url: 'http://localhost:3000/users/subscribe?userID=<%= user.id %>',
+                url: 'http://localhost:3000/users/subscribe',
                 type: 'POST',
+                data:  { status: 'subscribe', userID: '<%= user.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
             });
         }
 
-        const unSubscribe = () => {
+        const unsubscribe = () => {
             $('#subscribeBtn').css('background-color', '#ff0000');
             $('#subscribeBtn').css('color', '#ffffff')
             $('#subscribeBtn').html('구독');
 
             $.ajax({
-                url: 'http://localhost:3000/users/unSubscribe?userID=<%= user.id %>',
-                type: 'DELETE',
+                url: 'http://localhost:3000/users/subscribe',
+                type: 'POST',
+                data:  { status: 'unsubscribe', userID: '<%= user.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
@@ -278,9 +282,8 @@
             if ($('#subscribeBtn').css('background-color') === 'rgb(255, 0, 0)')
                 subscribe();
             else
-                unSubscribe();
+                unsubscribe();
         });
     </script>
-    <!-- /subscribe -->
 </body>
 </html>
