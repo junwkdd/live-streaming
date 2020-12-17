@@ -47,11 +47,11 @@
             if($("#pw").val() === $("#repw").val()) {
                 $("#pwCheck").css("color", "#56baed");
                 $("#pwCheck").html("* 비밀번호 일치");
-                $("#submit").attr("disabled", true);
+                $("#submit").attr("disabled", false);
             } else {
                 $("#pwCheck").css("color", "#FF0000");
                 $("#pwCheck").html("* 비밀번호 불일치");
-                $("#submit").attr("disabled", false);
+                $("#submit").attr("disabled", true);
             }
         });
     </script>

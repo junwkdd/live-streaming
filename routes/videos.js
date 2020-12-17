@@ -8,9 +8,10 @@ const VideoModel = require('../model/videos');
 const UserModel = require('../model/users');
 
 const ffmpeg = require('../lib/ffmpeg');
+const { viewOverlap } = require('../lib/view');
 
 router.get('/upload', async (ctx) => {
-  await ctx.render('upload');
+  await ctx.render('videoUpload');
 });
 
 router.post('/upload', async (ctx) => {
@@ -51,13 +52,7 @@ router.get('/view', async (ctx) => {
   const video = await VideoModel.findOne({ _id: videoID });
   const user = await UserModel.findOne({ id: video.userID });
 
-  const views = ctx.cookies.get('views');
-  if (views === undefined) {
-    ctx.cookies.set('views', { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 1 });
-  }
-  if (!views.includes(videoID) || views === undefined) {
-    ctx.cookies.set('views', views.concat('', videoID), { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 1 });
-
+  if (viewOverlap(ctx, videoID)) {
     video.view += 1;
     await video.save();
   }
