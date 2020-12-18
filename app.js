@@ -10,6 +10,7 @@ const logger = require('koa-logger');
 const cors = require('@koa/cors');
 const mongoose = require('mongoose');
 const NodeMediaServer = require('./mediaServer');
+const socketServer = require('./socketServer');
 
 require('dotenv').config();
 
@@ -63,7 +64,10 @@ app.on('error', (err) => {
 });
 
 // node-media-server
-NodeMediaServer.run(console.log('NodeMediaServer running'));
+NodeMediaServer.run();
+
+// socketServer
+socketServer.listen(3300);
 
 // database
 mongoose.Promise = Promise;

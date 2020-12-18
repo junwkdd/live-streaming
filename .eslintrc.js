@@ -14,5 +14,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-shadow': 'off',
     'linebreak-style': 0,
+    'no-param-reassign': ['error', { props: false }],
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
 };

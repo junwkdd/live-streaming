@@ -7,13 +7,6 @@ const UserModel = require('../model/users');
 const { generateToken } = require('../lib/token');
 const { hash } = require('../lib/hash');
 
-router.get('/exists', async (ctx) => {
-  const user = await UserModel.findOne({ id: ctx.request.query.id });
-
-  if (user === null) ctx.body = 'no user';
-  else ctx.body = 'exists';
-});
-
 router.get('/login', async (ctx) => {
   await ctx.render('login');
 });
@@ -56,21 +49,40 @@ router.get('/logout', async (ctx) => {
 router.get('/exists', async (ctx) => {
   const user = await UserModel.findOne({ id: ctx.request.query.id });
 
-  if (user === null) ctx.body = 'no user';
-  else ctx.body = 'exists';
+  if (user === null) ctx.body = false;
+  else ctx.body = true;
 });
 
 router.post('/subscribe', async (ctx) => {
   const user = await UserModel.findOne({ id: ctx.request.body.userID });
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
 
-  if (ctx.request.body.status === 'subscribe') {
-    user.subscribe += 1;
-  } else if (ctx.request.body.status === 'unsubscribe') {
-    user.subscribe -= 1;
-  }
+  user.subscribe += 1;
+  curUser.subscribing.push(user.id);
+
   await user.save();
+  await curUser.save();
 
   ctx.body = user.subscribe;
+});
+
+router.post('/unsubscribe', async (ctx) => {
+  const user = await UserModel.findOne({ id: ctx.request.body.userID });
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
+
+  user.subscribe -= 1;
+  curUser.subscribing.pull(user.id);
+
+  await user.save();
+  await curUser.save();
+
+  ctx.body = user.subscribe;
+});
+
+router.get('/channel', async (ctx) => {
+  const user = await UserModel.findOne({ id: ctx.request.query.id });
+
+  ctx.render('channel', user);
 });
 
 module.exports = router;

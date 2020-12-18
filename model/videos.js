@@ -8,7 +8,7 @@ const videoSchema = new Schema({
   title: { type: String },
   description: { type: String },
   date: { type: String },
-  comments: { type: Array, default: [] },
+  comments: { type: Array },
   view: { type: Number, default: 0 },
   like: { type: Number, default: 0 },
   hate: { type: Number, default: 0 },

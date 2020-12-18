@@ -18,7 +18,7 @@
 </head>
 <body style="overflow-x:hidden" class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="/">Vuivei</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -26,31 +26,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Video</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                    <a class="nav-link" href="#">Live</a>
                 </li>
             </ul>
             <div class="dropdown">
-                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
-                  채널명
-                </button>
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="fas fa-plus"></i></button>
                 <div class="dropdown-menu" style="min-width: 0;">
-                    <a class="dropdown-item px-2" href="/channel">내 채널</a>
                     <a class="dropdown-item px-2" href="/videos/upload">업로드</a>
                     <a class="dropdown-item px-2" href="/live/upload">라이브 방송</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><%= curUser.nickname %></button>
+                <div class="dropdown-menu" style="min-width: 0;">
+                    <a class="dropdown-item px-2" href="/channel">내 채널</a>
                     <a class="dropdown-item px-2" href="/users/logout">로그아웃</a>
                 </div>
             </div>
@@ -107,8 +99,9 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
+
             </div>
-            <!--/.live broadcast-->
+                
 
             <!--VOD-->
             <div class="row mt-5">
@@ -156,7 +149,6 @@
                     </a>
                 </div>
             </div>
-            <!--/.VOD-->
         </div>
     </div>
 

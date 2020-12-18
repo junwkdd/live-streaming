@@ -42,7 +42,7 @@
         </div>
     </nav>
 
-    <div class="row mx-5 mt-5 ml-5">
+    <div class="row mx-5 mt-5">
         <div class="ml-5">
             <div class="videoPlayerContainer mt-5">
                 <video id="video" class="videoPlayer" controls autoplay></video>
@@ -54,12 +54,8 @@
                     </div>
     
                     <div class="text-secondary">
-                        <span class="">시청자 <%= live.view %>명</span>
+                        <span class="">시청자 <span class="viewer"><%= live.view %></span>명</span>
                         <span class="ml-3"><%= live.date %></span>
-                        <span style="cursor: default; user-select: none;">
-                            <span class="float-right h5 hate"><i class="fas fa-thumbs-down mr-2"></i><span class="hateCnt"><%= live.like %></span></span>
-                            <span class="float-right mr-4 h5 like"><i class="fas fa-thumbs-up mr-2"></i><span class="likeCnt"><%= live.hate %></span></span>
-                        </span>
                         <hr>
                     </div>
                 </div>
@@ -67,11 +63,11 @@
                 
                 <!-- channel summary -->
                 <div>
-                    <img src="<%= user.profile %>" style="width: 48px; height: 48px;" alt="..." class="align-top rounded-circle mr-1">
+                    <img src="<%= liveUser.profile %>" style="width: 48px; height: 48px;" alt="..." class="align-top rounded-circle mr-1">
                     <button class="btn btn-lg float-right" name="subscribe" id="subscribeBtn" style="color: white; background-color: red;">구독</button>
                     <div class="d-inline-block">
                         <span class="h6"><strong><%= live.nickname %></strong></span><br>
-                        <span class="text-secondary">구독자 <span class="subscribeCnt"><%= user.subscribe %></span>명</span><br>
+                        <span class="text-secondary">구독자 <span class="subscribeCnt"><%= liveUser.subscribe %></span>명</span><br>
                         <div class="mt-3"><%= live.description %></div>
                     </div>
                     <hr>
@@ -80,15 +76,28 @@
             </div>
         </div>
 
-        <div class="col-md-3 mt-5">
-            하이루
-        </div>        
+        <!-- chatting -->
+        <div class="col-md-3 mt-5 ml-4 row">
+            <div class="position-fixed bg-white col-md-10 border p-0" style="max-width: inherit;" id="chattingRoom">
+                <div class="mt-2 h4 text-center border-bottom pb-2">실시간 채팅</div>
+                <div class="mx-3 chatting">
+                </div>     
+            </div>
+                    
+            <div class="input-group mb-3 position-fixed" style="max-width: inherit; top: 83.8%;">
+                <input type="text" class="form-control rounded-0" id="msg" placeholder="채팅을 입력하세요.">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary rounded-0" id="sendChat" type="button">전송</button>
+                </div>
+            </div>  
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
     
     <!-- hls video player-->
     <script>
@@ -120,7 +129,7 @@
             $.ajax({
                 url: 'http://localhost:3000/live/like',
                 type: 'POST',
-                data: { status: 'like', videoID: '<%= live._id %>' },
+                data: { status: 'like', liveID: '<%= live._id %>' },
                 success: (likeCnt) => {
                     $('.likeCnt').html(likeCnt);
                 },
@@ -131,7 +140,7 @@
             $.ajax({
                 url: 'http://localhost:3000/live/like',
                 type: 'POST',
-                data: { status: 'unlike', videoID: '<%= live._id %>' },
+                data: { status: 'unlike', liveID: '<%= live._id %>' },
                 success: (likeCnt) => {
                     $('.likeCnt').html(likeCnt);
                 },
@@ -142,7 +151,7 @@
             $.ajax({
                 url: 'http://localhost:3000/live/hate',
                 type: 'POST',
-                data: { status: 'hate', videoID: '<%= live._id %>' },
+                data: { status: 'hate', liveID: '<%= live._id %>' },
                 success: (hateCnt) => {
                     $('.hateCnt').html(hateCnt);
                 },
@@ -153,7 +162,7 @@
             $.ajax({
                 url: 'http://localhost:3000/live/hate',
                 type: 'POST',
-                data: { status: 'unhate', videoID: '<%= live._id %>' },
+                data: { status: 'unhate', liveID: '<%= live._id %>' },
                 success: (hateCnt) => {
                     $('.hateCnt').html(hateCnt);
                 },
@@ -191,7 +200,7 @@
             $.ajax({
                 url: 'http://localhost:3000/users/subscribe',
                 type: 'POST',
-                data:  { status: 'subscribe', userID: '<%= user.id %>' },
+                data:  { status: 'subscribe', userID: '<%= liveUser.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
@@ -206,7 +215,7 @@
             $.ajax({
                 url: 'http://localhost:3000/users/subscribe',
                 type: 'POST',
-                data:  { status: 'unsubscribe', userID: '<%= user.id %>' },
+                data:  { status: 'unsubscribe', userID: '<%= liveUser.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
@@ -219,6 +228,43 @@
                 subscribe();
             else
                 unsubscribe();
+        });
+    </script>
+
+    <!-- socket -->
+    <script>
+        const socket = io.connect('http://localhost:3300');
+
+        socket.on('connect', () => {
+            socket.emit('addUser', '<%= user.nickname %>', '<%= live.streamKey %>');
+        });
+
+        socket.on('updateChat', (nickname, content) => {
+            $('.chatting').append(`<div><strong>${nickname}</strong> ${content}</div>`);
+        });
+
+        $('#sendChat').on('click', () => {
+            const msg = $('#msg').val();
+            $('#msg').val('');
+            socket.emit('sendChat', msg);
+        });
+
+        $('#msg').keypress(function(e) {
+            if(e.which == 13) {
+                $(this).blur();
+                $('#sendChat').focus().click();
+            }
+        });
+
+        socket.on('updateViewer', (clientList) => {
+            $.ajax({
+                url: 'http://localhost:3000/live/viewer',
+                type: 'POST',
+                data:  { userID: '<%= liveUser.id %>', clientList: clientList},
+                success: (viewerCnt) => {
+                    $('.viewer').html(viewerCnt);
+                },
+            });
         });
     </script>
 </body>

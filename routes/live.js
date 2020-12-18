@@ -10,9 +10,10 @@ const ffmpeg = require('../lib/ffmpeg');
 
 router.get('/view', async (ctx) => {
   const live = await LiveModel.findById(ctx.request.query.liveID);
-  const user = await UserModel.findOne({ id: live.userID });
+  const liveUser = await UserModel.findOne({ id: live.userID });
+  const user = await UserModel.findOne({ id: ctx.request.user.userID });
 
-  await ctx.render('live', { live, user });
+  await ctx.render('live', { live, liveUser, user });
 });
 
 router.get('/upload', async (ctx) => {
@@ -37,6 +38,15 @@ router.post('/upload', async (ctx) => {
 
 router.get('/thumbnail', async (ctx) => {
   await ffmpeg.extractThumbnailFromHls(ctx.request.query.streamKey, '00:00:05.000');
+});
+
+router.post('/viewer', async (ctx) => {
+  const live = await LiveModel.findOne({ userID: ctx.request.body.userID });
+  live.view += 1;
+
+  await live.save();
+
+  ctx.body = live.view;
 });
 
 module.exports = router;

@@ -8,7 +8,7 @@ const VideoModel = require('../model/videos');
 const UserModel = require('../model/users');
 
 const ffmpeg = require('../lib/ffmpeg');
-const { viewOverlap } = require('../lib/view');
+const { isViewOverlap } = require('../lib/view');
 
 router.get('/upload', async (ctx) => {
   await ctx.render('videoUpload');
@@ -51,24 +51,34 @@ router.get('/view', async (ctx) => {
 
   const video = await VideoModel.findOne({ _id: videoID });
   const user = await UserModel.findOne({ id: video.userID });
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
 
-  if (viewOverlap(ctx, videoID)) {
+  if (!isViewOverlap(ctx, videoID)) {
     video.view += 1;
     await video.save();
   }
 
-  await ctx.render('videoPlay', { video, user });
+  await ctx.render('videoPlay', { video, user, curUser });
 });
 
 router.post('/like', async (ctx) => {
   const video = await VideoModel.findById(ctx.request.body.videoID);
 
-  if (ctx.request.body.status === 'like') {
-    video.like += 1;
-  } else if (ctx.request.body.status === 'unlike') {
-    video.like -= 1;
-  }
+  video.like += 1;
   await video.save();
+
+  await UserModel.updateOne({ id: ctx.request.user.userID }, { $push: { like: video._id } });
+
+  ctx.body = video.like;
+});
+
+router.post('/unlike', async (ctx) => {
+  const video = await VideoModel.findById(ctx.request.body.videoID);
+
+  video.like -= 1;
+  await video.save();
+
+  await UserModel.updateOne({ id: ctx.request.user.userID }, { $pull: { like: video._id } });
 
   ctx.body = video.like;
 });
@@ -76,21 +86,28 @@ router.post('/like', async (ctx) => {
 router.post('/hate', async (ctx) => {
   const video = await VideoModel.findById(ctx.request.body.videoID);
 
-  if (ctx.request.body.status === 'hate') {
-    video.hate += 1;
-  } else if (ctx.request.body.status === 'unhate') {
-    video.hate -= 1;
-  }
-
+  video.hate += 1;
   await video.save();
+
+  await UserModel.updateOne({ id: ctx.request.user.userID }, { $push: { hate: video._id } });
+
+  ctx.body = video.hate;
+});
+
+router.post('/unhate', async (ctx) => {
+  const video = await VideoModel.findById(ctx.request.body.videoID);
+
+  video.hate -= 1;
+  await video.save();
+
+  await UserModel.updateOne({ id: ctx.request.user.userID }, { $pull: { hate: video._id } });
 
   ctx.body = video.hate;
 });
 
 router.post('/comment', async (ctx) => {
-  const { videoID } = ctx.request.query;
-
   const user = await UserModel.findOne({ id: ctx.request.user.userID });
+  const video = await VideoModel.findById(ctx.request.query.videoID);
 
   const comment = {
     nickname: user.nickname,
@@ -99,7 +116,9 @@ router.post('/comment', async (ctx) => {
     profile: user.profile,
   };
 
-  await VideoModel.updateOne({ _id: videoID }, { $push: { comments: comment } });
+  video.comments.push(comment);
+
+  await video.save();
 
   ctx.body = comment;
 });

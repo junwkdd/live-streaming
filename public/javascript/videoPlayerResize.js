@@ -7,6 +7,7 @@ const videoPlayerResize = () => {
         let playerWidth = windowWidth*(1280/1920);
         $(".videoPlayer").width(`${playerWidth}px`);
         $(".videoPlayer").height(`${playerWidth/(16/9)}px`);
+        $("#chattingRoom").height($(".videoPlayer").height());
     }
 }
 

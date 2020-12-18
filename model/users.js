@@ -7,6 +7,9 @@ const userSchema = new Schema({
   nickname: { type: String },
   pw: { type: String },
   subscribe: { type: Number, default: 0 },
+  subscribing: { type: Array },
+  like: { type: Array },
+  hate: { type: Array },
   profile: { type: String, default: '/images/profile.png' },
 });
 

@@ -154,68 +154,89 @@
     <!-- like hate -->
     <script>
         const like = () => {
-            $('.fa-thumbs-up').css('color', '#0275d8');
             $.ajax({
                 url: 'http://localhost:3000/videos/like',
                 type: 'POST',
-                data: { status: 'like', videoID: '<%= video._id %>' },
+                data: { videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
                     $('.likeCnt').html(likeCnt);
                 },
             });
         };
         const unlike = () => {
-            $('.fa-thumbs-up').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/videos/like',
+                url: 'http://localhost:3000/videos/unlike',
                 type: 'POST',
-                data: { status: 'unlike', videoID: '<%= video._id %>' },
+                data: { videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
                     $('.likeCnt').html(likeCnt);
                 },
             });
         };
         const hate = () => {
-            $('.fa-thumbs-down').css('color', '#0275d8');
             $.ajax({
                 url: 'http://localhost:3000/videos/hate',
                 type: 'POST',
-                data: { status: 'hate', videoID: '<%= video._id %>' },
+                data: { videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
                     $('.hateCnt').html(hateCnt);
                 },
             });
         };
         const unhate = () => {
-            $('.fa-thumbs-down').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/videos/hate',
+                url: 'http://localhost:3000/videos/unhate',
                 type: 'POST',
-                data: { status: 'unhate', videoID: '<%= video._id %>' },
+                data: {  videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
                     $('.hateCnt').html(hateCnt);
                 },
             });
         };
+        const toBlueBtn = (upDown) => {
+            $(upDown).css('color', '#0275d8');
+        }
+        const toGrayBtn = (upDown) => {
+            $(upDown).css('color', '#6c757d');
+        }
+
+        if('<%= curUser.like %>'.includes('<%= video.id %>')) {    // liking
+            toBlueBtn('.fa-thumbs-up');
+        } else {    // not liking
+            toGrayBtn('.fa-thumbs-up');
+        }
+
+        if('<%= curUser.hate %>'.includes('<%= video.id %>')) {    // hating
+            toBlueBtn('.fa-thumbs-down');
+        } else {    // not hating
+            toGrayBtn('.fa-thumbs-down');
+        }
+
 
         $('.like').on('click', () => {
             if ($('.fa-thumbs-up').css('color') === 'rgb(108, 117, 125)') {
+                toBlueBtn('.fa-thumbs-up');
                 like();
                 if ($('.fa-thumbs-down').css('color') === 'rgb(2, 117, 216)') {
+                    toGrayBtn('.fa-thumbs-down');
                     unhate();
                 }
             } else {
+                toGrayBtn('.fa-thumbs-up');
                 unlike();
             }
         });
 
         $('.hate').on('click', () => {
             if ($('.fa-thumbs-down').css('color') === 'rgb(108, 117, 125)') {
+                toBlueBtn('.fa-thumbs-down');
                 hate();
                 if ($('.fa-thumbs-up').css('color') === 'rgb(2, 117, 216)') {
+                    toGrayBtn('.fa-thumbs-up');
                     unlike();
                 }
             } else {
+                toGrayBtn('.fa-thumbs-down');
                 unhate();
             }
         });
@@ -249,40 +270,50 @@
     <!-- subscribe -->
     <script>
         const subscribe = () => {
-            $('#subscribeBtn').css('background-color', '#d3d3d3');
-            $('#subscribeBtn').css('color', '#6c757d')
-            $('#subscribeBtn').html('구독중');
             $.ajax({
                 url: 'http://localhost:3000/users/subscribe',
                 type: 'POST',
-                data:  { status: 'subscribe', userID: '<%= user.id %>' },
+                data:  { userID: '<%= user.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
             });
         }
-
         const unsubscribe = () => {
+            $.ajax({
+                url: 'http://localhost:3000/users/unsubscribe',
+                type: 'POST',
+                data:  { userID: '<%= user.id %>' },
+                success: (subscribeCnt) => {
+                    $('.subscribeCnt').html(subscribeCnt);
+                },
+            });
+        }
+        const toRedBtn = () => {
             $('#subscribeBtn').css('background-color', '#ff0000');
             $('#subscribeBtn').css('color', '#ffffff')
             $('#subscribeBtn').html('구독');
+        }
+        const toGrayBtn = () => {
+            $('#subscribeBtn').css('background-color', '#d3d3d3');
+            $('#subscribeBtn').css('color', '#6c757d')
+            $('#subscribeBtn').html('구독중');
+        }
 
-            $.ajax({
-                url: 'http://localhost:3000/users/subscribe',
-                type: 'POST',
-                data:  { status: 'unsubscribe', userID: '<%= user.id %>' },
-                success: (subscribeCnt) => {
-                    $('.subscribeCnt').html(subscribeCnt);
-                },
-            });
+        if('<%= curUser.subscribing %>'.includes('<%= user.id %>')) {    // subscribing
+            toGrayBtn();
+        } else {    // not subscribing
+            toRedBtn();
         }
 
         $('#subscribeBtn').on('click', () => {
-            console.log($('#subscribeBtn').css('background-color'))
-            if ($('#subscribeBtn').css('background-color') === 'rgb(255, 0, 0)')
+            if ($('#subscribeBtn').css('background-color') === 'rgb(255, 0, 0)') {
+                toGrayBtn()
                 subscribe();
-            else
+            } else {
+                toRedBtn();
                 unsubscribe();
+            }
         });
     </script>
 </body>
