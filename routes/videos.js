@@ -24,7 +24,7 @@ router.get('/upload', async (ctx) => {
 });
 
 router.post('/upload', async (ctx) => {
-  const dirArr = ctx.request.files.video.path.split(/\\/);
+  const dirArr = ctx.request.files.video.path.split('/');
 
   const fileInfo = dirArr[dirArr.length - 1].split('.');
   const fileName = fileInfo[0];
