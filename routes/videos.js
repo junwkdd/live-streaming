@@ -10,6 +10,13 @@ const UserModel = require('../model/users');
 const ffmpeg = require('../lib/ffmpeg');
 const { isViewOverlap } = require('../lib/view');
 
+router.get('/', async (ctx) => {
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
+  const videos = await VideoModel.find();
+
+  await ctx.render('videos', { curUser, videos });
+});
+
 router.get('/upload', async (ctx) => {
   await ctx.render('videoUpload');
 });
@@ -50,7 +57,7 @@ router.get('/view', async (ctx) => {
   const { videoID } = ctx.request.query;
 
   const video = await VideoModel.findOne({ _id: videoID });
-  const user = await UserModel.findOne({ id: video.userID });
+  const videoUser = await UserModel.findOne({ id: video.userID });
   const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
 
   if (!isViewOverlap(ctx, videoID)) {
@@ -58,7 +65,7 @@ router.get('/view', async (ctx) => {
     await video.save();
   }
 
-  await ctx.render('videoPlay', { video, user, curUser });
+  await ctx.render('videoPlay', { video, videoUser, curUser });
 });
 
 router.post('/like', async (ctx) => {

@@ -5,10 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
     <title>register</title>
   </head>
   <body class="h-100">
+    <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
+        <a class="navbar-brand" href="/">Vuivei</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/videos">Video</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/live">Live</a>
+                </li>
+            </ul>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="fas fa-plus"></i></button>
+                <div class="dropdown-menu" style="min-width: 0;">
+                    <a class="dropdown-item px-2" href="/videos/upload">업로드</a>
+                    <a class="dropdown-item px-2" href="/live/upload">라이브 방송</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><%= curUser.nickname %></button>
+                <div class="dropdown-menu" style="min-width: 0;">
+                    <a class="dropdown-item px-2" href="/channel?userID=<%= curUser.id %>">내 채널</a>
+                    <a class="dropdown-item px-2" href="/users/logout">로그아웃</a>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="h-100 d-flex align-items-center">
         <div class="shadow-lg mx-auto col-md-4 rounded-lg">
             <h3 class="my-3" style="color: #56baed">회원가입</h3>

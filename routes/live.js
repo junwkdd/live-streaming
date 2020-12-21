@@ -8,12 +8,21 @@ const UserModel = require('../model/users');
 
 const ffmpeg = require('../lib/ffmpeg');
 
+router.get('/', async (ctx) => {
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
+  const lives = await LiveModel.find();
+
+  await ctx.render('lives', { curUser, lives });
+});
 router.get('/view', async (ctx) => {
   const live = await LiveModel.findById(ctx.request.query.liveID);
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
   const liveUser = await UserModel.findOne({ id: live.userID });
   const user = await UserModel.findOne({ id: ctx.request.user.userID });
 
-  await ctx.render('live', { live, liveUser, user });
+  await ctx.render('livePlay', {
+    live, curUser, liveUser, user,
+  });
 });
 
 router.get('/upload', async (ctx) => {

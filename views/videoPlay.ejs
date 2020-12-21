@@ -9,8 +9,8 @@
     <style>.videoPlayer { max-width: 1280px; max-height: 720px; width: 1280px; height: 720px; }</style>
 </head>
 <body style="overflow-x:hidden" class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm fixed-top">
-        <a class="navbar-brand" href="#">Navbar</a>
+    <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
+        <a class="navbar-brand" href="/">Vuivei</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -18,27 +18,26 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/videos">Video</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                    <a class="nav-link" href="/live">Live</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="fas fa-plus"></i></button>
+                <div class="dropdown-menu" style="min-width: 0;">
+                    <a class="dropdown-item px-2" href="/videos/upload">업로드</a>
+                    <a class="dropdown-item px-2" href="/live/upload">라이브 방송</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><%= curUser.nickname %></button>
+                <div class="dropdown-menu" style="min-width: 0;">
+                    <a class="dropdown-item px-2" href="/channel?userID=<%= curUser.id %>">내 채널</a>
+                    <a class="dropdown-item px-2" href="/users/logout">로그아웃</a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -56,7 +55,7 @@
                     <div class="text-secondary">
                         <span class="">조회수 <%= video.view %>회</span>
                         <span class="ml-3"><%= video.date %></span>
-                        <span style="cursor: default; user-select: none;">
+                        <span style="cursor: default;">
                             <span class="float-right h5 hate"><i class="fas fa-thumbs-down mr-2"></i><span class="hateCnt"><%= video.hate %></span></span>
                             <span class="float-right mr-4 h5 like"><i class="fas fa-thumbs-up mr-2"></i><span class="likeCnt"><%= video.like %></span></span>
                         </span>
@@ -67,11 +66,11 @@
                 
                 <!-- channel summary -->
                 <div>
-                    <img src="<%= user.profile %>" style="width: 48px; height: 48px;" alt="..." class="align-top rounded-circle mr-1">
+                    <img src="<%= videoUser.profile %>" style="width: 48px; height: 48px;" alt="..." class="align-top rounded-circle mr-1">
                     <button class="btn btn-lg float-right" name="subscribe" id="subscribeBtn" style="color: white; background-color: red;">구독</button>
                     <div class="d-inline-block">
                         <span class="h6"><strong><%= video.nickname %></strong></span><br>
-                        <span class="text-secondary">구독자 <span class="subscribeCnt"><%= user.subscribe %></span>명</span><br>
+                        <span class="text-secondary">구독자 <span class="subscribeCnt"><%= videoUser.subscribe %></span>명</span><br>
                         <div class="mt-3"><%= video.description %></div>
                     </div>
                     <hr>
@@ -273,7 +272,7 @@
             $.ajax({
                 url: 'http://localhost:3000/users/subscribe',
                 type: 'POST',
-                data:  { userID: '<%= user.id %>' },
+                data:  { userID: '<%= videoUser.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
@@ -283,7 +282,7 @@
             $.ajax({
                 url: 'http://localhost:3000/users/unsubscribe',
                 type: 'POST',
-                data:  { userID: '<%= user.id %>' },
+                data:  { userID: '<%= videoUser.id %>' },
                 success: (subscribeCnt) => {
                     $('.subscribeCnt').html(subscribeCnt);
                 },
@@ -294,21 +293,21 @@
             $('#subscribeBtn').css('color', '#ffffff')
             $('#subscribeBtn').html('구독');
         }
-        const toGrayBtn = () => {
+        const toGray = () => {
             $('#subscribeBtn').css('background-color', '#d3d3d3');
             $('#subscribeBtn').css('color', '#6c757d')
             $('#subscribeBtn').html('구독중');
         }
 
-        if('<%= curUser.subscribing %>'.includes('<%= user.id %>')) {    // subscribing
-            toGrayBtn();
+        if('<%= curUser.subscribing %>'.includes('<%= videoUser.id %>')) {    // subscribing
+            toGray();
         } else {    // not subscribing
             toRedBtn();
         }
 
         $('#subscribeBtn').on('click', () => {
             if ($('#subscribeBtn').css('background-color') === 'rgb(255, 0, 0)') {
-                toGrayBtn()
+                toGray()
                 subscribe();
             } else {
                 toRedBtn();
