@@ -247,7 +247,7 @@
 
     <!-- socket -->
     <script>
-        const socket = io.connect('http://localhost:3300');
+        const socket = io.connect('http://34.64.138.235:3300');
 
         socket.on('connect', () => {
             socket.emit('addUser', '<%= user.nickname %>', '<%= live.streamKey %>');
