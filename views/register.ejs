@@ -59,10 +59,11 @@
         });
     </script>
 
+    <!-- id exists -->
     <script>
         $('#id').on('propertychange change keyup paste input', () => {
             $.ajax({
-                url: 'http://localhost:3000/users/exists',
+                url: './exists',
                 type: 'get',
                 data: { id: $('#id').val() },
                 success: (isExists) => {

@@ -126,7 +126,7 @@
         const like = () => {
             $('.fa-thumbs-up').css('color', '#0275d8');
             $.ajax({
-                url: 'http://localhost:3000/live/like',
+                url: '../live/like',
                 type: 'POST',
                 data: { status: 'like', liveID: '<%= live._id %>' },
                 success: (likeCnt) => {
@@ -137,7 +137,7 @@
         const unlike = () => {
             $('.fa-thumbs-up').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/live/like',
+                url: '../live/like',
                 type: 'POST',
                 data: { status: 'unlike', liveID: '<%= live._id %>' },
                 success: (likeCnt) => {
@@ -148,7 +148,7 @@
         const hate = () => {
             $('.fa-thumbs-down').css('color', '#0275d8');
             $.ajax({
-                url: 'http://localhost:3000/live/hate',
+                url: '../live/hate',
                 type: 'POST',
                 data: { status: 'hate', liveID: '<%= live._id %>' },
                 success: (hateCnt) => {
@@ -159,7 +159,7 @@
         const unhate = () => {
             $('.fa-thumbs-down').css('color', '#6c757d');
             $.ajax({
-                url: 'http://localhost:3000/live/hate',
+                url: '../live/hate',
                 type: 'POST',
                 data: { status: 'unhate', liveID: '<%= live._id %>' },
                 success: (hateCnt) => {
@@ -197,7 +197,7 @@
             $('#subscribeBtn').css('color', '#6c757d')
             $('#subscribeBtn').html('구독중');
             $.ajax({
-                url: 'http://localhost:3000/users/subscribe',
+                url: '../users/subscribe',
                 type: 'POST',
                 data:  { status: 'subscribe', userID: '<%= liveUser.id %>' },
                 success: (subscribeCnt) => {
@@ -211,7 +211,7 @@
             $('#subscribeBtn').html('구독');
 
             $.ajax({
-                url: 'http://localhost:3000/users/subscribe',
+                url: '../users/unsubscribe',
                 type: 'POST',
                 data:  { status: 'unsubscribe', userID: '<%= liveUser.id %>' },
                 success: (subscribeCnt) => {
@@ -272,7 +272,7 @@
 
         socket.on('updateViewer', (clientList) => {
             $.ajax({
-                url: 'http://localhost:3000/live/viewer',
+                url: '../live/viewer',
                 type: 'POST',
                 data:  { userID: '<%= liveUser.id %>', clientList: clientList},
                 success: (viewerCnt) => {

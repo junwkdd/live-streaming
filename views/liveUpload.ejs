@@ -81,7 +81,7 @@
     <script>
         $("#submit").on("click", () => {            
             $.ajax({
-                url: 'http://localhost:3000/live/upload',
+                url: '../live/upload',
                 type: 'post',
                 enctype: 'multipart/form-data',
                 data: new FormData($("#fileForm")[0]),
@@ -108,7 +108,6 @@
     <!-- copy clipboard -->
     <script>
         $("#copy").on('click', () => {
-            console.log("하ㅣ")
             $('#streamKey').select();
             document.execCommand('copy');
         });

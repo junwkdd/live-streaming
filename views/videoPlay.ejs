@@ -154,7 +154,7 @@
     <script>
         const like = () => {
             $.ajax({
-                url: 'http://localhost:3000/videos/like',
+                url: '../videos/like',
                 type: 'POST',
                 data: { videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
@@ -164,7 +164,7 @@
         };
         const unlike = () => {
             $.ajax({
-                url: 'http://localhost:3000/videos/unlike',
+                url: '../videos/unlike',
                 type: 'POST',
                 data: { videoID: '<%= video._id %>' },
                 success: (likeCnt) => {
@@ -174,7 +174,7 @@
         };
         const hate = () => {
             $.ajax({
-                url: 'http://localhost:3000/videos/hate',
+                url: '../videos/hate',
                 type: 'POST',
                 data: { videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
@@ -184,7 +184,7 @@
         };
         const unhate = () => {
             $.ajax({
-                url: 'http://localhost:3000/videos/unhate',
+                url: '../videos/unhate',
                 type: 'POST',
                 data: {  videoID: '<%= video._id %>' },
                 success: (hateCnt) => {
@@ -245,7 +245,7 @@
     <script>
         $(".commnetBtn").on("click", () => {
             $.ajax({
-                url: 'http://localhost:3000/videos/comment?videoID=<%= video._id %>',
+                url: '../videos/comment?videoID=<%= video._id %>',
                 type: 'POST',
                 data: { comment: $('#comment').val() },
                 success: (comment) => {
@@ -270,7 +270,7 @@
     <script>
         const subscribe = () => {
             $.ajax({
-                url: 'http://localhost:3000/users/subscribe',
+                url: '../users/subscribe',
                 type: 'POST',
                 data:  { userID: '<%= videoUser.id %>' },
                 success: (subscribeCnt) => {
@@ -280,7 +280,7 @@
         }
         const unsubscribe = () => {
             $.ajax({
-                url: 'http://localhost:3000/users/unsubscribe',
+                url: '../users/unsubscribe',
                 type: 'POST',
                 data:  { userID: '<%= videoUser.id %>' },
                 success: (subscribeCnt) => {
