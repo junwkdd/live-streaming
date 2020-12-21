@@ -13,7 +13,7 @@ const config = {
       allow_origin: '*',
     },
     trans: {
-      ffmpeg: 'C:/Program Files/ffmpeg/bin/ffmpeg.exe',
+      ffmpeg: '/usr/bin/ffmpeg',
       tasks: [
         {
           app: 'live',
