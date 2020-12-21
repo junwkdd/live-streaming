@@ -18,7 +18,9 @@ router.get('/', async (ctx) => {
 });
 
 router.get('/upload', async (ctx) => {
-  await ctx.render('videoUpload');
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
+
+  await ctx.render('videoUpload', { curUser });
 });
 
 router.post('/upload', async (ctx) => {

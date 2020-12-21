@@ -14,6 +14,7 @@ router.get('/', async (ctx) => {
 
   await ctx.render('lives', { curUser, lives });
 });
+
 router.get('/view', async (ctx) => {
   const live = await LiveModel.findById(ctx.request.query.liveID);
   const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
@@ -26,7 +27,9 @@ router.get('/view', async (ctx) => {
 });
 
 router.get('/upload', async (ctx) => {
-  await ctx.render('liveUpload');
+  const curUser = await UserModel.findOne({ id: ctx.request.user.userID });
+
+  await ctx.render('liveUpload', { curUser });
 });
 
 router.post('/upload', async (ctx) => {
