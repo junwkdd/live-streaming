@@ -119,6 +119,7 @@ router.post('/comment', async (ctx) => {
   const video = await VideoModel.findById(ctx.request.query.videoID);
 
   const comment = {
+    userID: user.id,
     nickname: user.nickname,
     date: moment().format('YYYY.MM.DD'),
     comment: ctx.request.body.comment,
